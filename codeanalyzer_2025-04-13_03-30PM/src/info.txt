@@ -1,0 +1,60 @@
+Project: Linux-to-Windows Automated Backup via SSH using Python
+
+Step-by-Step Setup Process:
+
+• Installed Oracle VirtualBox 7.1.2 on Windows 11 (latest version gave errors)
+• Downloaded Ubuntu Server 22.04.5 LTS (Jammy Jellyfish) ISO (~1.5 GB)
+• Created a new VM in VirtualBox:
+  - Type: Linux
+  - Version: Ubuntu (64-bit)
+  - Name: UbuntuSSH
+  - Memory: 2048 MB
+  - Hard disk: 25 GB, dynamically allocated
+
+• Started VM and mounted Ubuntu ISO
+• Performed manual Ubuntu installation:
+  - Created custom username and password
+  - Enabled "Install OpenSSH server"
+  - Marked user as administrator (sudo access)
+
+• In case sudo access was not granted initially:
+  - Open terminal and ran: `pkexec visudo`
+  - Entered root password
+  - After the line: `root    ALL=(ALL:ALL) ALL`
+    Added this line: `<your_username>    ALL=(ALL) ALL`
+  - Saved and exited
+
+• After reboot, confirmed SSH is active with:
+  `sudo systemctl status ssh`
+
+• Set up port forwarding in VirtualBox:
+  - Network → Adapter 1 → NAT → Advanced → Port Forwarding
+  - Rule added:
+    Name: SSH
+    Protocol: TCP
+    Host Port: 2222
+    Guest Port: 22
+
+• On Windows, opened PowerShell and verified SSH access with:
+  `ssh <username>@localhost -p 2222`
+
+• Inside Ubuntu, created test folder structure:
+  `~/codeanalyzer/src/main.py`
+
+• Created this info.txt file:
+  `~/codeanalyzer/info.txt`
+
+• Installed Python on Windows with these libraries:
+  `pip install paramiko scp`
+
+• Created `backup_codeanalyzer.py` on Windows:
+  - Connects to Linux VM via SSH
+  - Copies the entire `codeanalyzer` folder
+  - Saves it in `D:\codeAnalyzer Backup\codeanalyzer_<date>_<time>`
+
+Next steps to be implemented:
+
+• Push the backup folder to a GitHub repository
+• Compare folder sizes (Linux vs Windows)
+• Send email confirmation with backup summary and sizes
+

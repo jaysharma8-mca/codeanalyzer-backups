@@ -1,0 +1,91 @@
+Project: Linux-to-Windows Automated Backup via Python (SCP + Git + Gmail)
+
+----------------------------------------------------
+Step-by-Step Setup Process (Test Environment)
+----------------------------------------------------
+
+1. Installed Oracle VirtualBox 7.1.2 on Windows 11
+2. Downloaded Ubuntu Server 22.04.5 LTS (Jammy Jellyfish)
+3. Created a new VM in VirtualBox:
+   - Type: Linux
+   - Version: Ubuntu (64-bit)
+   - Name: UbuntuSSH
+   - Memory: 2048 MB
+   - Hard disk: 25 GB dynamically allocated
+
+4. Installed Ubuntu manually:
+   - Created custom username and password
+   - Enabled "Install OpenSSH server"
+   - Made the user an administrator (sudo access)
+
+----------------------------------------------------
+What I Did When Sudo Was Not Initially Available
+----------------------------------------------------
+Opened a terminal and ran:
+
+  pkexec visudo
+
+Entered root password, then added the following line below the root entry:
+
+  jay    ALL=(ALL) ALL
+
+This gave the user sudo privileges.
+
+----------------------------------------------------
+Post-Install Setup
+----------------------------------------------------
+
+5. Verified SSH access from Windows with:
+   ssh jay@localhost -p 2222
+
+6. Set up port forwarding in VirtualBox:
+   - Network Adapter: NAT
+   - Host Port: 2222 → Guest Port: 22
+
+7. Installed required Python libraries in Windows:
+   pip install paramiko scp
+
+8. Created backup structure inside Linux:
+   ~/codeanalyzer/src/main.py
+   ~/codeanalyzer/info.txt
+
+9. Cloned GitHub repo in Windows at:
+   D:\Ansu\codeanalyzer-backups
+
+----------------------------------------------------
+Script Functionality Summary
+----------------------------------------------------
+
+✅ Connects to Ubuntu VM using SSH  
+✅ Copies `codeanalyzer/src` folder via SCP  
+✅ Creates a timestamped folder on Windows like:
+   D:\Ansu\codeanalyzer-backups\codeanalyzer_YYYY-MM-DD_HH-MMAMPM
+
+✅ Runs Git commands:
+   - `git add`
+   - `git commit` with timestamp
+   - `git push` to remote GitHub repo
+
+✅ Retrieves Linux folder size using `du -sh`  
+✅ Calculates Windows folder size in bytes
+
+✅ Automatically chooses KB or MB unit:
+   - If Linux size ends in "K", Windows shows in KB
+   - If Linux size ends in "M", Windows shows in MB
+
+✅ Sends email notification via Gmail:
+   - Uses Gmail SMTP + App Password
+   - Sends to multiple recipients
+   - Includes date, sizes, and backup location
+
+----------------------------------------------------
+Next Ideas for Improvement
+----------------------------------------------------
+
+• HTML formatted email (table view)
+• Compress backup folder into ZIP before push
+• Add Task Scheduler job to run script daily
+• Add error logging and retry logic
+
+End of Setup Notes.
+
